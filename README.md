@@ -79,8 +79,7 @@ websocket-kanban-vitest-playwright-2026/
                 └── KanbanBoard.e2e.test.js
 ```
 
-**Backend** holds the WebSocket server and task store. **Frontend** holds the React app, styles, socket hook, reducer, and all tests. Copy `.env.example` to `.env` in both backend and frontend (see Setup).
-
+**Backend** holds the WebSocket server and task store. **Frontend** holds the React app, styles, socket hook, reducer, and all tests. 
 ---
 
 ## Setup
