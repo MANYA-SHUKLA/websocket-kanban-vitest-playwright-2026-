@@ -8,6 +8,10 @@ const server = http.createServer(app);
 const corsOrigin = process.env.FRONTEND_URL || "*";
 const io = new Server(server, { cors: { origin: corsOrigin } });
 
+app.get("/", (req, res) => {
+  res.send("Made with ♥ by Manya Shukla © 2026");
+});
+
 const tasks = new Map();
 let nextId = 1;
 
