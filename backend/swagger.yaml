@@ -1,0 +1,446 @@
+openapi: 3.0.3
+info:
+  title: Kanban Board WebSocket API
+  description: |
+    Real-time Kanban board backend API powered by **Socket.IO** over WebSockets.
+
+    ## Transport
+    This server does **not** expose traditional REST endpoints.  
+    All task operations happen through **Socket.IO** events on a persistent WebSocket connection.
+
+    ### Connection
+    ```
+    const socket = io("http://localhost:5001");
+    ```
+
+    ### Authentication
+    No authentication is required. CORS origin is controlled via the `FRONTEND_URL` environment variable.
+
+    ---
+
+    ## WebSocket Events Reference
+
+    ### Client → Server (emit)
+
+    | Event           | Payload                                      | Description                        |
+    |-----------------|----------------------------------------------|------------------------------------|
+    | `task:create`   | `TaskCreatePayload`                          | Create a new task (added to "todo") |
+    | `task:update`   | `TaskUpdatePayload`                          | Update an existing task             |
+    | `task:move`     | `{ id: string, column: string }`             | Move a task to a different column   |
+    | `task:delete`   | `{ id: string }` or `string`                 | Delete a task by ID                 |
+
+    ### Server → Client (on)
+
+    | Event           | Payload                                      | Description                                 |
+    |-----------------|----------------------------------------------|---------------------------------------------|
+    | `sync:tasks`    | `Task[]`                                     | Full task list sent on initial connection    |
+    | `task:created`  | `Task`                                       | Broadcast when a task is created             |
+    | `task:updated`  | `Task`                                       | Broadcast when a task is updated             |
+    | `task:moved`    | `Task`                                       | Broadcast when a task is moved               |
+    | `task:deleted`  | `{ id: string }`                             | Broadcast when a task is deleted             |
+    | `error`         | `{ message: string }`                        | Sent to the emitting client on validation errors |
+
+  version: 1.0.0
+  contact:
+    name: Manya Shukla
+  license:
+    name: ISC
+
+servers:
+  - url: http://localhost:5001
+    description: Local development server
+
+tags:
+  - name: Connection
+    description: WebSocket connection and sync
+  - name: Tasks
+    description: Task CRUD operations via Socket.IO events
+
+paths:
+  /:
+    get:
+      tags:
+        - Connection
+      summary: Health check / Socket.IO handshake
+      description: |
+        The root endpoint is served by Express. Socket.IO performs its handshake
+        via `GET /socket.io/?EIO=4&transport=polling` automatically.
+      responses:
+        "200":
+          description: Server is running
+
+  /socket.io/:
+    get:
+      tags:
+        - Connection
+      summary: Socket.IO handshake (polling transport)
+      description: |
+        Socket.IO clients first connect via HTTP long-polling at this endpoint,
+        then upgrade to WebSocket. This is handled automatically by the Socket.IO library.
+      parameters:
+        - name: EIO
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 4
+          description: Engine.IO protocol version
+        - name: transport
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [polling, websocket]
+          description: Transport type
+      responses:
+        "200":
+          description: Handshake successful
+
+  /events/task-create:
+    post:
+      tags:
+        - Tasks
+      summary: "Event → task:create"
+      description: |
+        **Socket.IO event** — not a REST endpoint.  
+        Emit `task:create` with the payload below to create a new task.  
+        The task is assigned to the **"todo"** column automatically.
+
+        **Server broadcasts:** `task:created` with the full `Task` object to all clients.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskCreatePayload"
+            examples:
+              minimal:
+                summary: Minimal task
+                value:
+                  title: "Fix login bug"
+              full:
+                summary: Full task
+                value:
+                  title: "Fix login bug"
+                  description: "Users cannot log in with SSO"
+                  priority: "High"
+                  category: "Bug"
+                  attachments:
+                    - "screenshot.png"
+      responses:
+        "200":
+          description: "Server emits `task:created` to all clients"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: "Server emits `error` to the sender"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /events/task-update:
+    post:
+      tags:
+        - Tasks
+      summary: "Event → task:update"
+      description: |
+        **Socket.IO event** — not a REST endpoint.  
+        Emit `task:update` with the payload below to update an existing task.
+
+        **Server broadcasts:** `task:updated` with the merged `Task` object to all clients.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdatePayload"
+            examples:
+              changePriority:
+                summary: Change priority
+                value:
+                  id: "1"
+                  priority: "High"
+              fullUpdate:
+                summary: Full update
+                value:
+                  id: "1"
+                  title: "Updated title"
+                  description: "Updated description"
+                  priority: "Low"
+                  category: "Enhancement"
+                  attachments: []
+      responses:
+        "200":
+          description: "Server emits `task:updated` to all clients"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: "Server emits `error` — Task not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /events/task-move:
+    post:
+      tags:
+        - Tasks
+      summary: "Event → task:move"
+      description: |
+        **Socket.IO event** — not a REST endpoint.  
+        Emit `task:move` to move a task to a different column.
+
+        **Server broadcasts:** `task:moved` with the updated `Task` object to all clients.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskMovePayload"
+            examples:
+              moveToInProgress:
+                summary: Move to In Progress
+                value:
+                  id: "1"
+                  column: "inProgress"
+              moveToDone:
+                summary: Move to Done
+                value:
+                  id: "1"
+                  column: "done"
+      responses:
+        "200":
+          description: "Server emits `task:moved` to all clients"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: "Server emits `error` — Task not found or invalid column"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /events/task-delete:
+    post:
+      tags:
+        - Tasks
+      summary: "Event → task:delete"
+      description: |
+        **Socket.IO event** — not a REST endpoint.  
+        Emit `task:delete` with the task ID to delete it.
+
+        **Server broadcasts:** `task:deleted` with `{ id }` to all clients.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskDeletePayload"
+            examples:
+              deleteById:
+                summary: Delete task
+                value:
+                  id: "1"
+      responses:
+        "200":
+          description: "Server emits `task:deleted` to all clients"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskDeletedResponse"
+        "404":
+          description: "Server emits `error` — Task not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    Task:
+      type: object
+      description: A Kanban task object
+      required:
+        - id
+        - title
+        - description
+        - column
+        - priority
+        - category
+        - attachments
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique task identifier (auto-incremented)
+          example: "1"
+        title:
+          type: string
+          description: Task title
+          example: "Fix login bug"
+        description:
+          type: string
+          description: Task description
+          example: "Users cannot log in with SSO"
+        column:
+          type: string
+          description: Current column
+          enum:
+            - todo
+            - inProgress
+            - done
+          example: "todo"
+        priority:
+          type: string
+          description: Task priority level
+          enum:
+            - Low
+            - Medium
+            - High
+          example: "Medium"
+        category:
+          type: string
+          description: Task category
+          enum:
+            - Bug
+            - Feature
+            - Enhancement
+          example: "Feature"
+        attachments:
+          type: array
+          description: List of attachment filenames/URLs
+          items:
+            type: string
+          example: ["screenshot.png", "report.pdf"]
+        createdAt:
+          type: integer
+          format: int64
+          description: Timestamp (ms since epoch) when the task was created
+          example: 1770393600000
+
+    TaskCreatePayload:
+      type: object
+      description: Payload for `task:create` event
+      properties:
+        title:
+          type: string
+          description: Task title (defaults to "Untitled")
+          example: "Fix login bug"
+        description:
+          type: string
+          description: Task description (defaults to "")
+          example: "Users cannot log in with SSO"
+        priority:
+          type: string
+          description: Priority level (defaults to "Medium")
+          enum:
+            - Low
+            - Medium
+            - High
+          example: "High"
+        category:
+          type: string
+          description: Category (defaults to "Feature")
+          enum:
+            - Bug
+            - Feature
+            - Enhancement
+          example: "Bug"
+        attachments:
+          type: array
+          description: Attachment filenames/URLs
+          items:
+            type: string
+          example: ["screenshot.png"]
+
+    TaskUpdatePayload:
+      type: object
+      description: Payload for `task:update` event
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: ID of the task to update
+          example: "1"
+        title:
+          type: string
+          example: "Updated title"
+        description:
+          type: string
+          example: "Updated description"
+        priority:
+          type: string
+          enum:
+            - Low
+            - Medium
+            - High
+          example: "High"
+        category:
+          type: string
+          enum:
+            - Bug
+            - Feature
+            - Enhancement
+          example: "Bug"
+        attachments:
+          type: array
+          items:
+            type: string
+          example: []
+
+    TaskMovePayload:
+      type: object
+      description: Payload for `task:move` event
+      required:
+        - id
+        - column
+      properties:
+        id:
+          type: string
+          description: ID of the task to move
+          example: "1"
+        column:
+          type: string
+          description: Target column
+          enum:
+            - todo
+            - inProgress
+            - done
+          example: "inProgress"
+
+    TaskDeletePayload:
+      type: object
+      description: Payload for `task:delete` event
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: ID of the task to delete
+          example: "1"
+
+    TaskDeletedResponse:
+      type: object
+      description: Response broadcast for `task:deleted` event
+      properties:
+        id:
+          type: string
+          description: ID of the deleted task
+          example: "1"
+
+    ErrorResponse:
+      type: object
+      description: Error response emitted to the sender client
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: "Task not found"
