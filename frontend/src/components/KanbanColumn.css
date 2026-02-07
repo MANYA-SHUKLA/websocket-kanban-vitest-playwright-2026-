@@ -1,0 +1,90 @@
+.kanban-column {
+  flex: 1;
+  min-width: 320px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 0 2px;
+  min-height: 440px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.kanban-column:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.kanban-column--over {
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.06) 100%);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25), 0 12px 40px rgba(0, 0, 0, 0.25);
+  transform: scale(1.02);
+}
+
+.kanban-column__title {
+  margin: 0 0 22px;
+  font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgba(248, 250, 252, 0.95);
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: none;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.kanban-column__title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 70%;
+  border-radius: 0 2px 2px 0;
+  transition: height 0.25s ease, opacity 0.25s ease;
+}
+
+.kanban-column--todo .kanban-column__title::before {
+  background: linear-gradient(180deg, #64748b 0%, #94a3b8 100%);
+}
+
+.kanban-column--todo .kanban-column__title {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.15) 0%, rgba(148, 163, 184, 0.08) 100%);
+}
+
+.kanban-column--todo:hover .kanban-column__title {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.2) 0%, rgba(148, 163, 184, 0.12) 100%);
+}
+
+.kanban-column--inprogress .kanban-column__title::before {
+  background: linear-gradient(180deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.kanban-column--inprogress .kanban-column__title {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(251, 191, 36, 0.08) 100%);
+}
+
+.kanban-column--inprogress:hover .kanban-column__title {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.12) 100%);
+}
+
+.kanban-column--done .kanban-column__title::before {
+  background: linear-gradient(180deg, #10b981 0%, #34d399 100%);
+}
+
+.kanban-column--done .kanban-column__title {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(52, 211, 153, 0.08) 100%);
+}
+
+.kanban-column--done:hover .kanban-column__title {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(52, 211, 153, 0.12) 100%);
+}
+
+.kanban-column__tasks {
+  min-height: 240px;
+}

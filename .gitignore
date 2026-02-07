@@ -1,0 +1,141 @@
+# =====================================================
+# Dependencies
+# =====================================================
+node_modules/
+.pnp/
+.pnp.js
+
+# =====================================================
+# Build / Output
+# =====================================================
+dist/
+build/
+out/
+*.local
+
+# =====================================================
+# Environment variables
+# =====================================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# =====================================================
+# Logs
+# =====================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =====================================================
+# Runtime data
+# =====================================================
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# =====================================================
+# Testing – Vitest / Jest / Coverage
+# =====================================================
+coverage/
+*.lcov
+.nyc_output/
+
+# =====================================================
+# Testing – Playwright
+# =====================================================
+playwright-report/
+playwright/.cache/
+test-results/
+blob-report/
+
+# =====================================================
+# Vite
+# =====================================================
+.vite/
+
+# =====================================================
+# ESLint / Prettier / Stylelint caches
+# =====================================================
+.eslintcache
+.stylelintcache
+.prettiercache
+
+# =====================================================
+# Editor / IDE
+# =====================================================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# =====================================================
+# OS generated files
+# =====================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+Icon?
+
+# =====================================================
+# Package manager caches & stores
+# =====================================================
+.npm/
+.pnpm-store/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# =====================================================
+# Misc / Secrets / Archives
+# =====================================================
+*.pem
+*.key
+*.cert
+*.tgz
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# =====================================================
+# Turborepo / Monorepo caches
+# =====================================================
+.turbo/
+.cache/
+.parcel-cache/
+
+# =====================================================
+# Optional tooling
+# =====================================================
+.history/
+*.bak
+*.tmp
+*.temp
+*.swp
+*~

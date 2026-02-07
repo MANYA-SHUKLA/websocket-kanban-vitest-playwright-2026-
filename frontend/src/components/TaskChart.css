@@ -1,0 +1,159 @@
+.task-chart {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 28px 32px 32px;
+  margin-top: 40px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.task-chart:hover {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.task-chart__header {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.task-chart__title {
+  margin: 0 0 16px;
+  font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: rgba(248, 250, 252, 0.95);
+  transition: color 0.25s ease;
+}
+
+.task-chart:hover .task-chart__title {
+  color: #f8fafc;
+}
+
+.task-chart__summary {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  row-gap: 4px;
+}
+
+.task-chart__stat {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.task-chart__stat-value {
+  color: #34d399;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.task-chart__stat-sep {
+  margin: 0 6px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.task-chart__stat-total {
+  color: rgba(248, 250, 252, 0.9);
+  font-weight: 700;
+}
+
+.task-chart__stat-label {
+  margin-left: 6px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.task-chart__pct {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 6px 14px;
+  font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #34d399;
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.2) 0%, rgba(16, 185, 129, 0.12) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 12px;
+  letter-spacing: -0.02em;
+}
+
+.task-chart__bar {
+  min-height: 240px;
+  margin-bottom: 8px;
+}
+
+.task-chart__pie {
+  min-height: 220px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.task-chart .recharts-cartesian-grid-horizontal line,
+.task-chart .recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-dasharray: 4 4;
+}
+
+.task-chart .recharts-xAxis .recharts-text,
+.task-chart .recharts-yAxis .recharts-text {
+  fill: var(--text-muted) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  font-family: "DM Sans", system-ui, sans-serif !important;
+}
+
+.task-chart .recharts-legend-item-text {
+  fill: var(--text-secondary) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  font-family: "DM Sans", system-ui, sans-serif !important;
+}
+
+.task-chart .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.task-chart-tooltip {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+.task-chart-tooltip__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.task-chart-tooltip__value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.task-chart .recharts-default-tooltip {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+  font-size: 0.85rem !important;
+  color: #f8fafc !important;
+}
