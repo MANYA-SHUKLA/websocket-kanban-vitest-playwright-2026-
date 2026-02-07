@@ -100,23 +100,12 @@ websocket-kanban-vitest-playwright-2026/
 - Backend loads `.env` via **dotenv**.
 - Frontend only exposes variables that start with **VITE_**.
 
-Create env files from the examples:
-
-```bash
-# Backend
-cd backend && cp .env.example .env
-
-# Frontend
-cd frontend && cp .env.example .env
-```
-
 ### Install and run
 
 **1. Backend** (terminal 1):
 
 ```bash
 cd backend
-cp .env.example .env   # if not done yet
 npm install
 npm start
 ```
@@ -127,7 +116,7 @@ You should see: `Server running on port 5001`.
 
 ```bash
 cd frontend
-cp .env.example .env   # if not done yet
+
 npm install
 npm run dev
 ```
